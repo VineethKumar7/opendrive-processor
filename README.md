@@ -12,6 +12,39 @@ A comprehensive tool for parsing, visualizing, and route planning on OpenDRIVE H
 
 This tool helps engineers **parse**, **visualize**, and **analyze** these complex maps.
 
+## Screenshots
+
+### Dashboard
+![Dashboard](docs/screenshots/dashboard.jpg)
+
+The **Dashboard** provides an overview of your HD maps and quick actions:
+- **Statistics**: Maps loaded, roads parsed, routes planned
+- **Quick Actions**: Open .xodr files, load samples, create route plans, batch analyze
+- **Recent Maps**: Quick access to recently opened OpenDRIVE files
+
+### Map Viewer
+![Map Viewer](docs/screenshots/map-viewer.jpg)
+
+The **Map Viewer** is the core visualization interface:
+- **Interactive Canvas**: Pan, zoom, and explore the road network
+- **Layer Controls**: Toggle roads, lanes, signs, junctions, labels
+- **Road Inspector**: Click any road to see detailed properties
+  - Geometry info (start position, heading, type)
+  - Lane configuration with widths
+  - Cross-section visualization
+  - Speed limits and connections
+- **Tools**: Find, measure, mark, and route planning
+
+### Analysis
+![Analysis](docs/screenshots/analysis.jpg)
+
+The **Analysis** page provides comprehensive map statistics and validation:
+- **Overview Stats**: Total roads, lanes, junctions, and signs
+- **Road Types**: Distribution breakdown (town, rural, motorway)
+- **Lane Types**: Driving vs non-driving lane percentages
+- **Junction Complexity**: Simple (3-way), standard (4-way), complex (5+ way)
+- **Validation**: Automatic checks for connectivity, lane widths, and junction linking
+
 ## Architecture
 
 ```mermaid
