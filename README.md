@@ -85,26 +85,41 @@ graph TB
 ## Features
 
 ```mermaid
-mindmap
-  root((OpenDRIVE<br/>Processor))
-    Parse
-      Read .xodr files
-      Extract roads
-      Extract lanes
-      Extract signals
-    Visualize
-      Interactive map
-      Road geometry
-      Lane boundaries
-      Traffic signs
-    Route Plan
-      A* algorithm
-      Dijkstra
-      Multi-waypoint
-    Analyze
-      Validation
-      Statistics
-      Export data
+flowchart TB
+    subgraph Parse["📄 Parse"]
+        P1[Read .xodr files]
+        P2[Extract roads]
+        P3[Extract lanes]
+        P4[Extract signals]
+    end
+
+    subgraph Visualize["🗺️ Visualize"]
+        V1[Interactive map]
+        V2[Road geometry]
+        V3[Lane boundaries]
+        V4[Traffic signs]
+    end
+
+    subgraph Route["🛣️ Route Plan"]
+        R1[A* algorithm]
+        R2[Dijkstra]
+        R3[Multi-waypoint]
+    end
+
+    subgraph Analyze["📊 Analyze"]
+        A1[Validation]
+        A2[Statistics]
+        A3[Export data]
+    end
+
+    Parse --> Visualize
+    Parse --> Route
+    Parse --> Analyze
+
+    style Parse fill:#3b82f6,color:#fff
+    style Visualize fill:#22c55e,color:#fff
+    style Route fill:#f97316,color:#fff
+    style Analyze fill:#a855f7,color:#fff
 ```
 
 ### C++ Core Library
