@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenDRIVE>
+    <header revMajor="1" revMinor="6" name="SimpleRoad" version="1.0" date="2024-11-01" 
+            north="100.0" south="-100.0" east="500.0" west="0.0"/>
+    
+    <!-- Straight road segment -->
+    <road id="1" name="Main Street" length="200.0" junction="-1">
+        <link>
+            <successor elementType="junction" elementId="1"/>
+        </link>
+        <type s="0" type="town">
+            <speed max="50" unit="km/h"/>
+        </type>
+        <planView>
+            <geometry s="0" x="0" y="0" hdg="0" length="200">
+                <line/>
+            </geometry>
+        </planView>
+        <lanes>
+            <laneSection s="0">
+                <left>
+                    <lane id="1" type="driving" level="false">
+                        <width sOffset="0" a="3.5" b="0" c="0" d="0"/>
+                    </lane>
+                </left>
+                <center>
+                    <lane id="0" type="none" level="false"/>
+                </center>
+                <right>
+                    <lane id="-1" type="driving" level="false">
+                        <width sOffset="0" a="3.5" b="0" c="0" d="0"/>
+                    </lane>
+                </right>
+            </laneSection>
+        </lanes>
+        <signals>
+            <signal id="sign_1" s="50" t="-5" name="Speed50" type="274" subtype="50" 
+                    value="50" unit="km/h" orientation="+"/>
+        </signals>
+    </road>
+    
+    <!-- Curved road with arc -->
+    <road id="2" name="Curved Road" length="78.54" junction="-1">
+        <link>
+            <predecessor elementType="junction" elementId="1"/>
+        </link>
+        <type s="0" type="town">
+            <speed max="30" unit="km/h"/>
+        </type>
+        <planView>
+            <geometry s="0" x="200" y="0" hdg="0" length="78.54">
+                <arc curvature="0.02"/>
+            </geometry>
+        </planView>
+        <lanes>
+            <laneSection s="0">
+                <left>
+                    <lane id="1" type="driving" level="false">
+                        <width sOffset="0" a="3.5" b="0" c="0" d="0"/>
+                    </lane>
+                </left>
+                <center>
+                    <lane id="0" type="none" level="false"/>
+                </center>
+                <right>
+                    <lane id="-1" type="driving" level="false">
+                        <width sOffset="0" a="3.5" b="0" c="0" d="0"/>
+                    </lane>
+                </right>
+            </laneSection>
+        </lanes>
+    </road>
+    
+    <!-- Side street -->
+    <road id="3" name="Side Street" length="100.0" junction="-1">
+        <link>
+            <predecessor elementType="junction" elementId="1"/>
+        </link>
+        <type s="0" type="town">
+            <speed max="30" unit="km/h"/>
+        </type>
+        <planView>
+            <geometry s="0" x="200" y="0" hdg="1.5708" length="100">
+                <line/>
+            </geometry>
+        </planView>
+        <lanes>
+            <laneSection s="0">
+                <left>
+                    <lane id="1" type="driving" level="false">
+                        <width sOffset="0" a="3.0" b="0" c="0" d="0"/>
+                    </lane>
+                </left>
+                <center>
+                    <lane id="0" type="none" level="false"/>
+                </center>
+                <right>
+                    <lane id="-1" type="driving" level="false">
+                        <width sOffset="0" a="3.0" b="0" c="0" d="0"/>
+                    </lane>
+                </right>
+            </laneSection>
+        </lanes>
+        <signals>
+            <signal id="sign_2" s="10" t="-4" name="Stop" type="206" 
+                    value="0" orientation="+"/>
+        </signals>
+    </road>
+    
+    <!-- Junction connecting roads 1, 2, and 3 -->
+    <junction id="1" name="Main Junction">
+        <connection id="1" incomingRoad="1" connectingRoad="2" contactPoint="start">
+            <laneLink from="-1" to="-1"/>
+        </connection>
+        <connection id="2" incomingRoad="1" connectingRoad="3" contactPoint="start">
+            <laneLink from="-1" to="-1"/>
+        </connection>
+        <connection id="3" incomingRoad="2" connectingRoad="1" contactPoint="end">
+            <laneLink from="1" to="1"/>
+        </connection>
+        <connection id="4" incomingRoad="3" connectingRoad="1" contactPoint="end">
+            <laneLink from="1" to="1"/>
+        </connection>
+    </junction>
+</OpenDRIVE>

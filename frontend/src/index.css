@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 20% 10%;
+    --foreground: 210 20% 90%;
+
+    --card: 220 18% 13%;
+    --card-foreground: 210 20% 90%;
+
+    --popover: 220 18% 13%;
+    --popover-foreground: 210 20% 90%;
+
+    --primary: 217 91% 60%;
+    --primary-foreground: 220 20% 10%;
+
+    --secondary: 220 16% 18%;
+    --secondary-foreground: 210 20% 80%;
+
+    --muted: 220 14% 16%;
+    --muted-foreground: 215 15% 55%;
+
+    --accent: 43 96% 56%;
+    --accent-foreground: 220 20% 10%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 220 14% 20%;
+    --input: 220 14% 20%;
+    --ring: 217 91% 60%;
+
+    --radius: 0.5rem;
+
+    /* Custom tokens */
+    --road: 215 14% 34%;
+    --lane-right: 217 91% 60%;
+    --lane-left: 0 72% 51%;
+    --junction: 43 96% 56%;
+    --route: 160 84% 39%;
+    --selected: 258 90% 66%;
+    --canvas-bg: 220 20% 8%;
+    --success: 160 84% 39%;
+    --warning: 43 96% 56%;
+
+    --sidebar-background: 220 20% 8%;
+    --sidebar-foreground: 210 20% 80%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 220 20% 10%;
+    --sidebar-accent: 220 16% 14%;
+    --sidebar-accent-foreground: 210 20% 90%;
+    --sidebar-border: 220 14% 18%;
+    --sidebar-ring: 217 91% 60%;
+
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: var(--font-sans);
+  }
+
+  code, .font-mono {
+    font-family: var(--font-mono);
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
+
+/* Canvas cursor */
+.cursor-grab { cursor: grab; }
+.cursor-grabbing { cursor: grabbing; }
