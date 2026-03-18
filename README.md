@@ -2,59 +2,107 @@
 
 A comprehensive tool for parsing, visualizing, and route planning on OpenDRIVE HD maps. Built with C++ for performance-critical parsing and Python/React for flexibility and modern UI.
 
+## What is OpenDRIVE?
+
+**OpenDRIVE** is a standard format for HD (High Definition) maps used in autonomous driving. Unlike regular navigation maps, OpenDRIVE contains precise information about:
+- 🛣️ Exact road geometry (curves, slopes, elevation)
+- 🚗 Lane layouts (width, type, direction)
+- 🚦 Traffic signs and signals
+- 🔀 Junction connections
+
+This tool helps engineers **parse**, **visualize**, and **analyze** these complex maps.
+
 ## Architecture
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                      React Frontend                         │
-│  ┌─────────┐ ┌──────────┐ ┌────────────┐ ┌──────────────┐  │
-│  │Dashboard│ │Map Viewer│ │Route Plan  │ │Traffic Signs │  │
-│  └────┬────┘ └────┬─────┘ └─────┬──────┘ └──────┬───────┘  │
-│       └───────────┴─────────────┴───────────────┘           │
-│                           │ REST API                        │
-├───────────────────────────┼─────────────────────────────────┤
-│                    FastAPI Backend                          │
-│  ┌────────────────────────┴────────────────────────┐        │
-│  │              Python API Layer                    │        │
-│  └────────────────────────┬────────────────────────┘        │
-│                           │ pybind11                        │
-├───────────────────────────┼─────────────────────────────────┤
-│                    C++ Core Library                         │
-│  ┌──────────┐ ┌───────────┐ ┌──────────────────────┐       │
-│  │  Parser  │ │ Geometry  │ │   Route Planner      │       │
-│  │  (XML)   │ │Calculator │ │  (Dijkstra/A*)       │       │
-│  └──────────┘ └───────────┘ └──────────────────────┘       │
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+graph TB
+    subgraph Frontend["🖥️ React Frontend"]
+        Dashboard[Dashboard]
+        MapViewer[Map Viewer]
+        RoutePlanner[Route Planner]
+        TrafficSigns[Traffic Signs]
+    end
+
+    subgraph Backend["🐍 Python Backend"]
+        FastAPI[FastAPI Server]
+        PyBindings[Python Bindings]
+    end
+
+    subgraph Core["⚡ C++ Core Library"]
+        Parser[XML Parser]
+        Geometry[Geometry Calculator]
+        Router[Route Planner<br/>Dijkstra/A*]
+    end
+
+    Dashboard --> FastAPI
+    MapViewer --> FastAPI
+    RoutePlanner --> FastAPI
+    TrafficSigns --> FastAPI
+    
+    FastAPI --> PyBindings
+    PyBindings --> Parser
+    PyBindings --> Geometry
+    PyBindings --> Router
+
+    style Frontend fill:#3b82f6,color:#fff
+    style Backend fill:#22c55e,color:#fff
+    style Core fill:#f97316,color:#fff
 ```
 
 ## Features
 
+```mermaid
+mindmap
+  root((OpenDRIVE<br/>Processor))
+    Parse
+      Read .xodr files
+      Extract roads
+      Extract lanes
+      Extract signals
+    Visualize
+      Interactive map
+      Road geometry
+      Lane boundaries
+      Traffic signs
+    Route Plan
+      A* algorithm
+      Dijkstra
+      Multi-waypoint
+    Analyze
+      Validation
+      Statistics
+      Export data
+```
+
 ### C++ Core Library
 - **OpenDRIVE Parser**: Full support for OpenDRIVE 1.4-1.6 format
-  - Road geometry (line, arc, spiral/clothoid, polynomial)
-  - Lane sections and widths
-  - Traffic signals and signs
-  - Junctions and connections
-- **Geometry Calculator**: Accurate road geometry computation
-  - Fresnel integrals for clothoid curves
-  - Lane boundary and center line sampling
-- **Route Planner**: Efficient pathfinding algorithms
-  - Dijkstra's algorithm for shortest path
-  - A* with Euclidean heuristic
-  - Scenario route generation
+- **Geometry Calculator**: Accurate clothoid/spiral curve computation
+- **Route Planner**: Dijkstra and A* pathfinding algorithms
 
 ### Python Backend
 - FastAPI REST API
 - Map upload and management
-- Route planning endpoints
-- Pure Python fallback parser (no C++ required)
+- Pure Python fallback (no C++ required)
 
 ### React Frontend
 - Interactive map visualization
 - Road and lane geometry display
-- Traffic sign overlay
 - Route planning interface
-- Map statistics and analysis
+
+## User Flow
+
+```mermaid
+flowchart LR
+    A[📤 Upload .xodr] --> B[📊 Dashboard]
+    B --> C[🗺️ Map Viewer]
+    C --> D{Choose Action}
+    D --> E[🚦 View Signs]
+    D --> F[🛣️ Plan Route]
+    D --> G[📈 Analyze]
+    F --> H[📍 Set Start/End]
+    H --> I[✨ Generate Route]
+    G --> J[📥 Export Data]
+```
 
 ## Prerequisites
 
@@ -66,11 +114,9 @@ A comprehensive tool for parsing, visualizing, and route planning on OpenDRIVE H
 
 ### Python
 - Python 3.9+
-- pip
 
 ### Frontend
 - Node.js 18+
-- npm or bun
 
 ## Installation
 
@@ -86,11 +132,6 @@ sudo apt install libtinyxml2-dev python3-pybind11
 mkdir build && cd build
 cmake .. -DBUILD_PYTHON_BINDINGS=ON
 make -j$(nproc)
-
-# Install Python module
-sudo make install
-# Or for local install:
-pip install .
 ```
 
 ### 2. Install Python Backend
@@ -109,26 +150,26 @@ npm install
 
 ## Running
 
-### Start Backend
+### Start All Services
 
 ```bash
-cd backend/python
-python api.py
-# API runs on http://localhost:8000
+./start.sh    # Starts backend + frontend
+./stop.sh     # Stops all services
 ```
 
-### Start Frontend
+### Manual Start
 
 ```bash
-cd frontend
-npm run dev
-# UI runs on http://localhost:8080
+# Backend (port 8000)
+cd backend/python && python api.py
+
+# Frontend (port 8080)
+cd frontend && npm run dev
 ```
 
 ### CLI Tool
 
 ```bash
-# After building C++
 ./build/opendrive_cli parse sample.xodr
 ./build/opendrive_cli validate sample.xodr
 ./build/opendrive_cli export sample.xodr > roads.csv
@@ -141,10 +182,8 @@ npm run dev
 | GET | `/maps` | List all maps |
 | POST | `/maps/upload` | Upload .xodr file |
 | GET | `/maps/{id}` | Get map info |
-| DELETE | `/maps/{id}` | Delete map |
 | GET | `/maps/{id}/roads` | Get road geometry |
 | GET | `/maps/{id}/signals` | Get traffic signals |
-| GET | `/maps/{id}/junctions` | Get junctions |
 | POST | `/maps/{id}/route` | Plan route |
 
 ## Project Structure
@@ -155,68 +194,36 @@ OpenDRIVE Road Network Processor/
 │   ├── cpp/
 │   │   ├── include/opendrive/    # C++ headers
 │   │   ├── src/                  # C++ implementation
-│   │   ├── bindings/             # pybind11 bindings
-│   │   └── CMakeLists.txt
-│   ├── python/
-│   │   └── api.py                # FastAPI backend
-│   └── requirements.txt
+│   │   └── bindings/             # pybind11 bindings
+│   └── python/
+│       └── api.py                # FastAPI backend
 ├── frontend/
-│   ├── src/
-│   │   ├── components/           # React components
-│   │   ├── pages/                # Page components
-│   │   ├── hooks/                # API hooks
-│   │   └── types/                # TypeScript types
-│   └── package.json
-├── data/
-│   └── maps/                     # Uploaded .xodr files
+│   └── src/
+│       ├── components/           # React components
+│       ├── pages/                # Page components
+│       └── hooks/                # API hooks
 ├── samples/                      # Sample OpenDRIVE files
 └── README.md
 ```
 
-## OpenDRIVE Format
+## Supported Geometry Types
 
-OpenDRIVE is an open standard for logical road network descriptions. Key elements:
-
-- **Roads**: Define the road topology with reference line geometry
-- **Lanes**: Describe lane layout within each road
-- **Junctions**: Connect multiple roads
-- **Signals**: Traffic signs, lights, and markings
-
-### Supported Geometry Types
-
-| Type | Description |
-|------|-------------|
-| Line | Straight segment |
-| Arc | Constant curvature |
-| Spiral | Clothoid (linearly varying curvature) |
-| Poly3 | Cubic polynomial |
-| ParamPoly3 | Parametric cubic polynomial |
-
-## Development
-
-### Adding New Features
-
-1. Implement in C++ core (`backend/cpp/src/`)
-2. Add pybind11 bindings (`backend/cpp/bindings/`)
-3. Expose via FastAPI (`backend/python/api.py`)
-4. Add React hooks (`frontend/src/hooks/`)
-5. Build UI components (`frontend/src/components/`)
-
-### Testing
-
-```bash
-# C++ tests
-cd backend/cpp/build
-ctest
-
-# Python tests
-cd backend
-pytest
-
-# Frontend tests
-cd frontend
-npm test
+```mermaid
+graph LR
+    subgraph Geometry Types
+        A[Line] --> B[Straight road]
+        C[Arc] --> D[Constant curve]
+        E[Spiral] --> F[Clothoid<br/>Highway ramps]
+        G[Poly3] --> H[Complex curves]
+    end
 ```
+
+| Type | Description | Use Case |
+|------|-------------|----------|
+| Line | Straight segment | City streets |
+| Arc | Constant curvature | Roundabouts |
+| Spiral | Clothoid curve | Highway ramps |
+| Poly3 | Cubic polynomial | Complex intersections |
 
 ## License
 
@@ -224,5 +231,4 @@ MIT License
 
 ## References
 
-- [OpenDRIVE Specification](https://www.asam.net/standards/detail/opendrive/)
-- [ASAM OpenDRIVE](https://www.asam.net/standards/detail/opendrive/)
+- [ASAM OpenDRIVE Specification](https://www.asam.net/standards/detail/opendrive/)
